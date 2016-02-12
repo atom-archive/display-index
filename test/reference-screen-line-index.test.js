@@ -29,6 +29,29 @@ describe('ReferenceScreenLineIndex', () => {
     assert(iterator.seekToScreenPosition(point(1, -2)))
     assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
   })
+
+  it('seeks token iterators via buffer coordinates', () => {
+    let screenLineIndex = buildScreenLineIndex()
+    let iterator = screenLineIndex.buildIterator()
+
+    assert(iterator.seekToBufferPosition(point(0, 0)))
+    assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
+
+    assert(iterator.seekToBufferPosition(point(0, 5)))
+    assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
+
+    assert(iterator.seekToBufferPosition(point(1, 1)))
+    assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
+
+    assert(iterator.seekToBufferPosition(point(2, 7)))
+    assertIteratorState(iterator, point(0, 6), point(0, 11), point(2, 5), point(2, 10), 'c')
+
+    assert(iterator.seekToBufferPosition(point(3, 10)))
+    assertIteratorState(iterator, point(2, 5), point(2, 10), point(3, 10), point(3, 15), 'g')
+
+    assert(!iterator.seekToBufferPosition(point(3, 20)))
+    assertIteratorState(iterator, point(2, 15), point(2, 15), point(3, 20), point(3, 20), null)
+  })
 })
 
 function point(row, column) {

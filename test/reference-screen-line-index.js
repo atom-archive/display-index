@@ -39,8 +39,9 @@ class ReferenceTokenIterator {
       this.bufferStart = traverse(this.bufferStart, this.screenLine.bufferExtent)
     }
 
-    // find containing token
     this.screenStart = {row: targetPosition.row, column: 0}
+
+    // find containing token
     for (this.tokenIndex = 0; this.tokenIndex < this.screenLine.tokens.length; this.tokenIndex++) {
       let token = this.screenLine.tokens[this.tokenIndex]
       this.screenEnd = traverse(this.screenStart, {row: 0, column: token.screenExtent})
@@ -49,6 +50,58 @@ class ReferenceTokenIterator {
       let tokenContainsTarget =
         compare(this.screenStart, targetPosition) <= 0
           && compare(targetPosition, this.screenEnd) < 0
+
+      if (tokenContainsTarget) return true
+
+      this.screenStart = this.screenEnd
+      this.bufferStart = this.bufferEnd
+    }
+
+    return false
+  }
+
+  seekToBufferPosition (targetPosition) {
+    if (targetPosition.row < 0) {
+      targetPosition = {row: 0, column: 0}
+    }
+    if (targetPosition.column < 0) {
+      targetPosition = {row: targetPosition.row, column: 0}
+    }
+
+    let lastBufferRow = this.getLastBufferRow()
+    if (targetPosition.row > lastBufferRow) {
+      targetPosition = {row: lastBufferRow, column: Infinity}
+    }
+
+    // find containing screen line
+    let lineBufferStart = {row: 0, column: 0}
+    let screenRow = 0
+    while (true) {
+      this.screenLine = this.screenLines[screenRow]
+
+      let lineBufferEnd = traverse(lineBufferStart, this.screenLine.bufferExtent)
+      let lineContainsTargetPosition =
+        compare(lineBufferStart, targetPosition) <= 0
+          && compare(targetPosition, lineBufferEnd) < 0
+
+      if (lineContainsTargetPosition || screenRow === this.getLastScreenRow()) break
+
+      lineBufferStart = lineBufferEnd
+      screenRow++
+    }
+
+    this.screenStart = {row: screenRow, column: 0}
+    this.bufferStart = lineBufferStart
+
+    // find containing token
+    for (this.tokenIndex = 0; this.tokenIndex < this.screenLine.tokens.length; this.tokenIndex++) {
+      let token = this.screenLine.tokens[this.tokenIndex]
+      this.screenEnd = traverse(this.screenStart, {row: 0, column: token.screenExtent})
+      this.bufferEnd = traverse(this.bufferStart, token.bufferExtent)
+
+      let tokenContainsTarget =
+        compare(this.bufferStart, targetPosition) <= 0
+          && compare(targetPosition, this.bufferEnd) < 0
 
       if (tokenContainsTarget) return true
 
@@ -82,5 +135,15 @@ class ReferenceTokenIterator {
 
   getLastScreenRow () {
     return this.screenLines.length - 1
+  }
+
+  getLastBufferRow () {
+    let bufferPosition = {row: 0, column: 0}
+
+    for (let screenLine of this.screenLines) {
+      bufferPosition = traverse(bufferPosition, screenLine.bufferExtent)
+    }
+
+    return bufferPosition.row
   }
 }
