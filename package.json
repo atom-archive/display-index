@@ -1,0 +1,48 @@
+{
+  "name": "atom-screen-line-index",
+  "version": "0.0.0",
+  "description": "Used by Atom to track the correspondence between on-screen lines and the underlying buffer.",
+  "main": "dist/screen-line-index.js",
+  "scripts": {
+    "test": "npm run standard && node_modules/.bin/mocha ./test/helpers/setup  test/*",
+    "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/setup  test/",
+    "prepublish": "npm run standard && npm run clean && npm run build",
+    "standard": "node_modules/.bin/standard {src,test}/**/*.js",
+    "build": "node_modules/.bin/babel src --out-dir dist",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atom/atom-screen-line-index.git"
+  },
+  "keywords": [
+    "atom lines data-structure"
+  ],
+  "author": "Nathan Sobo <nathan@github.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nathansobo/atom-screen-line-index/issues"
+  },
+  "homepage": "https://github.com/atom/atom-screen-line-index",
+  "devDependencies": {
+    "babel": "^5.0.0",
+    "babel-eslint": "^4.0.5",
+    "chai": "^2.0.0",
+    "electron-mocha": "git://github.com/nathansobo/electron-mocha.git#interactive-option",
+    "electron-prebuilt": "^0.30.1",
+    "mocha": "^2.3.4",
+    "random-seed": "^0.2.0",
+    "standard": "^4.5.4"
+  },
+  "dependencies": {
+    "random-seed": "^0.2.0"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "global": [
+      "describe",
+      "it",
+      "assert"
+    ]
+  }
+}
