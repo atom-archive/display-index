@@ -10,13 +10,32 @@ export default class ReferenceScreenLineIndex {
   }
 
   buildIterator () {
-    return new ReferenceTokenIterator(this.screenLines)
+    return new ReferenceTokenIterator(this)
+  }
+
+  getLastScreenRow () {
+    return this.getScreenLineCount() - 1
+  }
+
+  getScreenLineCount () {
+    return this.screenLines.length
+  }
+
+  getLastBufferRow () {
+    let bufferPosition = {row: 0, column: 0}
+
+    for (let screenLine of this.screenLines) {
+      bufferPosition = traverse(bufferPosition, screenLine.bufferExtent)
+    }
+
+    return bufferPosition.row
   }
 }
 
 class ReferenceTokenIterator {
-  constructor (screenLines) {
-    this.screenLines = screenLines
+  constructor (screenLineIndex) {
+    this.screenLineIndex = screenLineIndex
+    this.screenLines = screenLineIndex.screenLines
   }
 
   seekToScreenPosition (targetPosition) {
@@ -134,16 +153,10 @@ class ReferenceTokenIterator {
   }
 
   getLastScreenRow () {
-    return this.screenLines.length - 1
+    return this.screenLineIndex.getLastScreenRow()
   }
 
   getLastBufferRow () {
-    let bufferPosition = {row: 0, column: 0}
-
-    for (let screenLine of this.screenLines) {
-      bufferPosition = traverse(bufferPosition, screenLine.bufferExtent)
-    }
-
-    return bufferPosition.row
+    return this.screenLineIndex.getLastBufferRow()
   }
 }
