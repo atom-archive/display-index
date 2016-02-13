@@ -71,7 +71,7 @@ function buildScreenLineIndex () {
 
   screenLineIndex.splice(0, 0, [
     {
-      screenExtent: 15,
+      screenExtent: 11,
       bufferExtent: point(3, 0),
       tokens: [
         {screenExtent: 5, bufferExtent: point(0, 5), metadata: 'a'},
