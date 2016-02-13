@@ -1,6 +1,8 @@
 import Random from 'random-seed'
 import ReferenceScreenLineIndex from './reference-screen-line-index'
+import ScreenLineIndex from '../src/screen-line-index'
 import {traverse} from '../src/point-helpers'
+import './helpers/add-to-html-helpers'
 
 describe('ScreenLineIndex', () => {
   it('behaves identically to a linear reference implementation under random mutations and queries', () => {
@@ -13,10 +15,13 @@ describe('ScreenLineIndex', () => {
       tokenCount = 0
 
       let referenceIndex = new ReferenceScreenLineIndex()
+      let realIndex = new ScreenLineIndex(seed)
 
       for (var j = 0; j < 3; j++) {
-        performRandomSplice(random, null, referenceIndex)
+        performRandomSplice(random, realIndex, referenceIndex)
       }
+
+      document.write(realIndex.toHTML())
     }
 
     function performRandomSplice (random, realIndex, referenceIndex) {
@@ -25,6 +30,7 @@ describe('ScreenLineIndex', () => {
       let screenLines = buildRandomScreenLines(random)
 
       referenceIndex.splice(startRow, replaceCount, screenLines)
+      realIndex.splice(startRow, replaceCount, screenLines)
     }
 
     function buildRandomScreenLines (random) {

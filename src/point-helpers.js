@@ -43,7 +43,7 @@ export function traversalDistance (end, start) {
   }
 }
 
-export function format (point) {
+export function formatPoint (point) {
   return `(${point.row}, ${point.column})`
 }
 
