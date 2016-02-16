@@ -34,6 +34,30 @@ export default class ReferenceScreenLineIndex {
   lineLengthForScreenRow (screenRow) {
     return this.screenLines[screenRow].screenExtent
   }
+
+  getMaxScreenLineLength () {
+    let maxScreenLineLength = -1
+    for (let screenLine of this.screenLines) {
+      maxScreenLineLength = Math.max(maxScreenLineLength, screenLine.screenExtent)
+    }
+    return maxScreenLineLength
+  }
+
+  getScreenRowsWithMaxLineLength () {
+    let maxScreenLineLength = -1
+    let screenRows = []
+    for (let screenRow = 0; screenRow < this.screenLines.length; screenRow++) {
+      let screenLine = this.screenLines[screenRow]
+      if (screenLine.screenExtent > maxScreenLineLength) {
+        maxScreenLineLength = screenLine.screenExtent
+        screenRows = []
+      }
+      if (screenLine.screenExtent === maxScreenLineLength) {
+        screenRows.push(screenRow)
+      }
+    }
+    return screenRows
+  }
 }
 
 class ReferenceTokenIterator {

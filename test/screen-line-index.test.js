@@ -12,7 +12,6 @@ describe('ScreenLineIndex', () => {
 
     for (let i = 0; i < 100; i++) {
       let seed = Date.now()
-      let failureMessage = `Random seed: ${seed}`
       let random = new Random(seed)
       tokenCount = 0
 
@@ -22,47 +21,56 @@ describe('ScreenLineIndex', () => {
       try {
         for (var j = 0; j < 3; j++) {
           performRandomSplice(random, realIndex, referenceIndex)
-          verify(random, realIndex, referenceIndex, failureMessage)
+          verify(random, realIndex, referenceIndex)
         }
       } catch (exception) {
-        exception.message += ' (' + failureMessage + ')'
+        exception.message += ` (Random seed: ${seed})`
         throw exception
       }
     }
 
-    function verify (random, realIndex, referenceIndex, failureMessage) {
+    function verify (random, realIndex, referenceIndex) {
       let realIterator = realIndex.buildIterator()
       let referenceIterator = referenceIndex.buildIterator()
 
+      // test seeking to random points, moving to successor
       for (let i = 0; i < 10; i++) {
         let screenRow = random.intBetween(0, referenceIndex.getScreenLineCount() - 1)
         let screenColumn = random.intBetween(0, referenceIndex.lineLengthForScreenRow(screenRow))
 
         referenceIterator.seekToScreenPosition(point(screenRow, screenColumn))
         realIterator.seekToScreenPosition(point(screenRow, screenColumn))
-        assertEqualIterators(realIterator, referenceIterator, failureMessage)
+        assertEqualIterators(realIterator, referenceIterator)
 
         let bufferStart = referenceIterator.getBufferStart()
         referenceIterator.seekToBufferPosition(bufferStart)
         realIterator.seekToBufferPosition(bufferStart)
-        assertEqualIterators(realIterator, referenceIterator, failureMessage)
+        assertEqualIterators(realIterator, referenceIterator)
 
         let j = 10
         while (referenceIterator.moveToSuccessor() && --j > 0) {
           assert(realIterator.moveToSuccessor())
-          assertEqualIterators(realIterator, referenceIterator, failureMessage)
+          assertEqualIterators(realIterator, referenceIterator)
         }
 
         if (j > 0) assert(!realIterator.moveToSuccessor())
       }
+
+      // verify longest screen line summarization
+      let maxScreenLineLength = referenceIndex.getMaxScreenLineLength()
+      let longestScreenRows = referenceIndex.getScreenRowsWithMaxLineLength()
+      let maxScreenPosition = realIndex.getScreenPositionWithMaxLineLength()
+
+      assert.equal(maxScreenPosition.column, maxScreenLineLength, 'Invalid longest screen column')
+      assert(longestScreenRows.indexOf(maxScreenPosition.row) !== -1, `Invalid longest screen row ${maxScreenPosition.row}`)
     }
 
-    function assertEqualIterators (realIterator, referenceIterator, failureMessage) {
-      assert.deepEqual(realIterator.getScreenStart(), referenceIterator.getScreenStart(), failureMessage + ' – Invalid screen start')
-      assert.deepEqual(realIterator.getScreenEnd(), referenceIterator.getScreenEnd(), failureMessage + ' – Invalid screen end')
-      assert.deepEqual(realIterator.getBufferStart(), referenceIterator.getBufferStart(), failureMessage + ' – Invalid buffer start')
-      assert.deepEqual(realIterator.getBufferEnd(), referenceIterator.getBufferEnd(), failureMessage + ' – Invalid buffer end')
-      assert.deepEqual(realIterator.getMetadata(), referenceIterator.getMetadata(), failureMessage + ' – Invalid metadata')
+    function assertEqualIterators (realIterator, referenceIterator) {
+      assert.deepEqual(realIterator.getScreenStart(), referenceIterator.getScreenStart(), 'Invalid screen start')
+      assert.deepEqual(realIterator.getScreenEnd(), referenceIterator.getScreenEnd(), 'Invalid screen end')
+      assert.deepEqual(realIterator.getBufferStart(), referenceIterator.getBufferStart(), 'Invalid buffer start')
+      assert.deepEqual(realIterator.getBufferEnd(), referenceIterator.getBufferEnd(), 'Invalid buffer end')
+      assert.deepEqual(realIterator.getMetadata(), referenceIterator.getMetadata(), 'Invalid metadata')
     }
 
     function performRandomSplice (random, realIndex, referenceIndex) {
