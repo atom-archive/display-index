@@ -92,8 +92,6 @@ class ReferenceTokenIterator {
 
     this.lineIterator.seekToBufferPosition(clippedTargetPosition)
 
-    clippedTargetPosition = minPoint(clippedTargetPosition, this.lineIterator.getBufferEnd())
-
     this.screenStart = this.lineIterator.getScreenStart()
     this.bufferStart = this.lineIterator.getBufferStart()
 
@@ -104,6 +102,7 @@ class ReferenceTokenIterator {
       this.bufferEnd = traverse(this.bufferStart, token.bufferExtent)
 
       if (this.containsBufferPosition(clippedTargetPosition)) break
+      if (this.tokenIndex === tokens.length - 1) break
 
       this.screenStart = this.screenEnd
       this.bufferStart = this.bufferEnd
@@ -130,7 +129,7 @@ class ReferenceTokenIterator {
     }
 
     this.screenEnd = traverse(this.screenStart, {row: 0, column: token.screenExtent})
-    this.bufferEnd = traverse(this.screenStart, token.bufferExtent)
+    this.bufferEnd = traverse(this.bufferStart, token.bufferExtent)
     return true
   }
 
@@ -213,6 +212,7 @@ class ReferenceLineIterator {
     let screenLine = this.getCurrentScreenLine()
     if (!screenLine) return false
     this.bufferEnd = traverse(this.bufferStart, screenLine.bufferExtent)
+    return true
   }
 
   getScreenStart () {

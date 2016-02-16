@@ -13,7 +13,7 @@ export function isZero (point) {
   return (point.row === 0 && point.column === 0)
 }
 
-export function min (a, b) {
+export function minPoint (a, b) {
   if (compare(a, b) <= 0) {
     return a
   } else {

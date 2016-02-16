@@ -1,4 +1,4 @@
-import {ZERO_POINT, traverse} from './point-helpers'
+import {ZERO_POINT, compare, traverse} from './point-helpers'
 
 export default class LineIterator {
   constructor (tree) {
@@ -40,7 +40,74 @@ export default class LineIterator {
     }
   }
 
-  getPointWithMaxLineLength () {
+  seekToScreenPosition (targetPosition) {
+    this.findNode(targetPosition.row)
+  }
+
+  seekToBufferPosition (targetPosition) {
+    this.reset()
+
+    if (!this.currentNode) return null
+
+    while (true) {
+      if (compare(targetPosition, this.currentLineBufferStart) <= 0) {
+        if (this.currentNode.left) {
+          this.descendLeft()
+        } else {
+          break
+        }
+      } else {
+        if (compare(targetPosition, this.currentLineBufferEnd) <= 0) {
+          break
+        } else if (this.currentNode.right) {
+          this.descendRight()
+        } else {
+          break
+        }
+      }
+    }
+  }
+
+  moveToSuccessor () {
+    if (!this.currentNode) return false
+
+    if (this.currentNode.right) {
+      this.descendRight()
+      while (this.currentNode.left) {
+        this.descendLeft()
+      }
+      return true
+    } else {
+      while (this.currentNode.parent && this.currentNode.parent.right === this.currentNode) {
+        this.ascend()
+      }
+      this.ascend()
+
+      return this.currentNode != null
+    }
+  }
+
+  getScreenRow () {
+    return this.currentScreenRow
+  }
+
+  getScreenLineLength () {
+    return this.currentNode.screenExtent
+  }
+
+  getBufferStart () {
+    return this.currentLineBufferStart
+  }
+
+  getBufferEnd () {
+    return this.currentLineBufferEnd
+  }
+
+  getTokens (node) {
+    return this.currentNode ? this.currentNode.tokens : null
+  }
+
+  getScreenPositionWithMaxLineLength () {
     this.reset()
 
     if (!this.currentNode) return null
@@ -77,6 +144,13 @@ export default class LineIterator {
     this.leftAncestorRow = this.currentScreenRow
     this.leftAncestorBufferEnd = this.currentLineBufferEnd
     this.setCurrentNode(this.currentNode.right)
+  }
+
+  ascend () {
+    this.leftAncestor = this.leftAncestorStack.pop()
+    this.leftAncestorRow = this.leftAncestorRowStack.pop()
+    this.leftAncestorBufferEnd = this.leftAncestorBufferEndStack.pop()
+    this.setCurrentNode(this.currentNode.parent)
   }
 
   pushToAncestorStacks () {

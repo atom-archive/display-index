@@ -13,7 +13,28 @@ export default class LineNode {
     this.id = ++idCounter
     this.parent = null
 
+    this.computeTokenOffsets()
     this.computeSubtreeProperties()
+  }
+
+  computeTokenOffsets () {
+    let screenStartOffset = 0
+    let bufferStartOffset = ZERO_POINT
+    let tokenCount = this.tokens.length
+
+    if (tokenCount === 0) throw new Error('Lines must contain at least one token')
+
+    for (let i = 0; i < tokenCount; i++) {
+      let token = this.tokens[i]
+      let screenEndOffset = screenStartOffset + token.screenExtent
+      let bufferEndOffset = traverse(bufferStartOffset, token.bufferExtent)
+      token.screenStartOffset = screenStartOffset
+      token.screenEndOffset = screenEndOffset
+      token.bufferStartOffset = bufferStartOffset
+      token.bufferEndOffset = bufferEndOffset
+      screenStartOffset = screenEndOffset
+      bufferStartOffset = bufferEndOffset
+    }
   }
 
   computeSubtreeProperties () {

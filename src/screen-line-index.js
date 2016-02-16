@@ -1,21 +1,22 @@
 import Random from 'random-seed'
 import LineIterator from './line-iterator'
+import TokenIterator from './token-iterator'
 import LineNode from './line-node'
 
 export default class ScreenLineIndex {
   constructor (seed = Date.now()) {
     this.randomGenerator = new Random(seed)
     this.root = null
-    this.iterator = this.buildIterator()
+    this.lineIterator = new LineIterator(this)
   }
 
   buildIterator () {
-    return new LineIterator(this)
+    return new TokenIterator(this)
   }
 
   splice (startRow, replacementCount, newScreenLines) {
-    let startNode = this.iterator.findNode(startRow - 1)
-    let endNode = this.iterator.findNode(startRow + replacementCount)
+    let startNode = this.lineIterator.findNode(startRow - 1)
+    let endNode = this.lineIterator.findNode(startRow + replacementCount)
 
     if (startNode) {
       startNode.priority = -1
@@ -52,8 +53,16 @@ export default class ScreenLineIndex {
     }
   }
 
-  lineLengthForRow (row) {
-    let node = this.iterator.findNode(row)
+  getLastScreenRow () {
+    return this.getScreenLineCount() - 1
+  }
+
+  getScreenLineCount () {
+    return this.root ? this.root.subtreeRowCount : 0
+  }
+
+  lineLengthForScreenRow (row) {
+    let node = this.lineIterator.findNode(row)
     if (node) {
       return node.screenExtent
     } else {
@@ -61,8 +70,8 @@ export default class ScreenLineIndex {
     }
   }
 
-  getPointWithMaxLineLength () {
-    return this.iterator.getPointWithMaxLineLength()
+  getScreenPositionWithMaxLineLength () {
+    return this.lineIterator.getScreenPositionWithMaxLineLength()
   }
 
   bubbleNodeUp (node) {
