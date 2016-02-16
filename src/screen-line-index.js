@@ -4,8 +4,13 @@ import TokenIterator from './token-iterator'
 import LineNode from './line-node'
 
 export default class ScreenLineIndex {
-  constructor (seed = Date.now()) {
-    this.randomGenerator = new Random(seed)
+  constructor (seed) {
+    if (seed != null) {
+      let randomGenerator = new Random(seed)
+      this.generateRandom = function (floor = 0) {
+        return randomGenerator.floatBetween(floor, 1)
+      }
+    }
     this.root = null
     this.lineIterator = new LineIterator(this)
   }
@@ -165,7 +170,10 @@ export default class ScreenLineIndex {
     return node
   }
 
+  // Note: This method is replaced on construction if a random seed is provided
   generateRandom (floor = 0) {
-    return this.randomGenerator.floatBetween(floor, 1)
+    let random = Math.random()
+    if (floor > 0) random = (random * (1 - floor)) + floor
+    return random
   }
 }
