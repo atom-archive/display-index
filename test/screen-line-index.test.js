@@ -30,8 +30,8 @@ describe('ScreenLineIndex', () => {
     }
 
     function verify (random, realIndex, referenceIndex) {
-      let realIterator = realIndex.buildIterator()
-      let referenceIterator = referenceIndex.buildIterator()
+      let realIterator = realIndex.buildTokenIterator()
+      let referenceIterator = referenceIndex.buildTokenIterator()
 
       // test seeking to random points, moving to successor
       for (let i = 0; i < 10; i++) {

@@ -3,7 +3,7 @@ import ReferenceScreenLineIndex from './reference-screen-line-index'
 describe('ReferenceScreenLineIndex', () => {
   it('seeks to the leftmost token containing a given screen position', () => {
     let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildIterator()
+    let iterator = screenLineIndex.buildTokenIterator()
 
     assert(iterator.seekToScreenPosition(point(0, 0)))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
@@ -23,7 +23,7 @@ describe('ReferenceScreenLineIndex', () => {
 
   it('seeks to the closest token to an invalid screen position', () => {
     let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildIterator()
+    let iterator = screenLineIndex.buildTokenIterator()
 
     assert(!iterator.seekToScreenPosition(point(3, 2)))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
@@ -37,7 +37,7 @@ describe('ReferenceScreenLineIndex', () => {
 
   it('seeks to the leftmost token containing a given buffer position', () => {
     let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildIterator()
+    let iterator = screenLineIndex.buildTokenIterator()
 
     assert(iterator.seekToBufferPosition(point(0, 0)))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
@@ -63,7 +63,7 @@ describe('ReferenceScreenLineIndex', () => {
 
   it('seeks to the closest token to an invalid buffer position', () => {
     let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildIterator()
+    let iterator = screenLineIndex.buildTokenIterator()
 
     assert(!iterator.seekToBufferPosition(point(4, 2)))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')

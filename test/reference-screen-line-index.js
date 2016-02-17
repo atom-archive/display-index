@@ -9,7 +9,7 @@ export default class ReferenceScreenLineIndex {
     this.screenLines.splice(startRow, rowCount, ...screenLines)
   }
 
-  buildIterator () {
+  buildTokenIterator () {
     return new ReferenceTokenIterator(this)
   }
 

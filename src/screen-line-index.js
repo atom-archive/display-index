@@ -15,7 +15,7 @@ export default class ScreenLineIndex {
     this.lineIterator = new LineIterator(this)
   }
 
-  buildIterator () {
+  buildTokenIterator () {
     return new TokenIterator(this)
   }
 
