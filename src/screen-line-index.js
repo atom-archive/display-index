@@ -19,6 +19,10 @@ export default class ScreenLineIndex {
     return new TokenIterator(this)
   }
 
+  buildScreenLineIterator () {
+    return new LineIterator(this)
+  }
+
   splice (startRow, replacementCount, newScreenLines) {
     let startNode = this.lineIterator.findNode(startRow - 1)
     let endNode = this.lineIterator.findNode(startRow + replacementCount)
