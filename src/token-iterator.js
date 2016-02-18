@@ -125,6 +125,22 @@ export default class TokenIterator {
     return this.getCurrentToken().metadata
   }
 
+  translateBufferPosition (bufferPosition) {
+    if (compare(bufferPosition, this.getBufferStart()) < 0) {
+      throw new Error(`Position ${formatPoint(bufferPosition)} is less than the current token's start (${formatPoint(this.getBufferStart())})`)
+    }
+
+    return traverse(this.getScreenStart(), traversalDistance(bufferPosition, this.getBufferStart()))
+  }
+
+  translateScreenPosition (screenPosition) {
+    if (compare(screenPosition, this.getScreenStart()) < 0) {
+      throw new Error(`Position ${formatPoint(screenPosition)} is less than the current token's start (${formatPoint(this.getScreenStart())})`)
+    }
+
+    return traverse(this.getBufferStart(), traversalDistance(screenPosition, this.getScreenStart()))
+  }
+
   getCurrentToken () {
     return this.lineIterator.getTokens()[this.tokenIndex]
   }
