@@ -1,13 +1,23 @@
 import LineIterator from './line-iterator'
-import {compare, minPoint, traverse, traversalDistance, ZERO_POINT} from './point-helpers'
+import {compare, minPoint, traverse, traversalDistance, formatPoint, ZERO_POINT} from './point-helpers'
+
+const ZERO_TOKEN = Object.freeze({
+  screenStartOffset: 0,
+  screenEndOffset: 0,
+  bufferStartOffset: ZERO_POINT,
+  bufferEndOffset: ZERO_POINT
+})
 
 export default class TokenIterator {
   constructor (screenLineIndex) {
     this.screenLineIndex = screenLineIndex
     this.lineIterator = new LineIterator(screenLineIndex)
+    this.clearCachedPositions()
   }
 
   seekToScreenPosition (targetPosition) {
+    this.clearCachedPositions()
+
     let clippedTargetPosition = targetPosition
     if (clippedTargetPosition.row < 0) {
       clippedTargetPosition = ZERO_POINT
@@ -23,6 +33,11 @@ export default class TokenIterator {
     this.lineIterator.seekToScreenPosition(clippedTargetPosition)
 
     let tokens = this.lineIterator.getTokens()
+
+    if (!tokens) {
+      return false
+    }
+
     let targetColumn = clippedTargetPosition.column
     let startIndex = 0
     let endIndex = tokens.length
@@ -36,17 +51,19 @@ export default class TokenIterator {
         endIndex = this.tokenIndex
       } else {
         if (targetColumn <= token.screenEndOffset) {
-          this.tokenIndex = this.tokenIndex
-          return true
+          break
         } else {
           startIndex = this.tokenIndex + 1
         }
       }
     }
-    return false
+
+    return token.screenStartOffset <= targetColumn && targetColumn <= token.screenEndOffset
   }
 
   seekToBufferPosition (targetPosition) {
+    this.clearCachedPositions()
+
     let clippedTargetPosition = targetPosition
     if (clippedTargetPosition.row < 0) {
       clippedTargetPosition = ZERO_POINT
@@ -60,6 +77,10 @@ export default class TokenIterator {
     clippedTargetPosition = minPoint(clippedTargetPosition, this.lineIterator.getBufferEnd())
 
     let tokens = this.lineIterator.getTokens()
+
+    if (!tokens) {
+      return false
+    }
 
     let targetOffsetInLine = traversalDistance(clippedTargetPosition, this.lineIterator.getBufferStart())
     let startIndex = 0
@@ -86,6 +107,8 @@ export default class TokenIterator {
   }
 
   moveToSuccessor () {
+    this.clearCachedPositions()
+
     this.tokenIndex++
     while (this.tokenIndex === this.lineIterator.getTokens().length) {
       if (this.lineIterator.moveToSuccessor()) {
@@ -98,27 +121,51 @@ export default class TokenIterator {
   }
 
   getScreenStart () {
+    if (this.screenStart) return this.screenStart
+
     let row = this.lineIterator.getScreenRow()
     let column = this.getCurrentToken().screenStartOffset
-    return {row, column}
+    this.screenStart = {row, column}
+
+    return this.screenStart
   }
 
   getScreenEnd () {
+    if (this.screenEnd) return this.screenEnd
+
     let row = this.lineIterator.getScreenRow()
     let column = this.getCurrentToken().screenEndOffset
-    return {row, column}
+    this.screenEnd = {row, column}
+
+    return this.screenEnd
+  }
+
+  getScreenExtent () {
+    return this.getCurrentToken().screenExtent
   }
 
   getBufferStart () {
+    if (this.bufferStart) return this.bufferStart
+
     let lineStart = this.lineIterator.getBufferStart()
     let tokenStartOffset = this.getCurrentToken().bufferStartOffset
-    return traverse(lineStart, tokenStartOffset)
+    this.bufferStart = traverse(lineStart, tokenStartOffset)
+
+    return this.bufferStart
   }
 
   getBufferEnd () {
+    if (this.bufferEnd) return this.bufferEnd
+
     let lineStart = this.lineIterator.getBufferStart()
     let tokenStartOffset = this.getCurrentToken().bufferEndOffset
-    return traverse(lineStart, tokenStartOffset)
+    this.bufferEnd = traverse(lineStart, tokenStartOffset)
+
+    return this.bufferEnd
+  }
+
+  getBufferExtent () {
+    return this.getCurrentToken().bufferExtent
   }
 
   getMetadata () {
@@ -142,6 +189,18 @@ export default class TokenIterator {
   }
 
   getCurrentToken () {
-    return this.lineIterator.getTokens()[this.tokenIndex]
+    let tokens = this.lineIterator.getTokens()
+    if (tokens && tokens.length > 0) {
+      return this.lineIterator.getTokens()[this.tokenIndex]
+    } else {
+      return ZERO_TOKEN
+    }
+  }
+
+  clearCachedPositions () {
+    this.screenStart = null
+    this.screenEnd = null
+    this.bufferStart = null
+    this.bufferEnd = null
   }
 }
