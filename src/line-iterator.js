@@ -12,7 +12,9 @@ export default class LineIterator {
     this.leftAncestorStack = []
     this.leftAncestorRowStack = [-1]
     this.leftAncestorBufferEndStack = [ZERO_POINT]
-    this.currentScreenRow = -1
+    this.currentScreenRow = 0
+    this.currentLineBufferStart = ZERO_POINT
+    this.currentLineBufferEnd = ZERO_POINT
     this.setCurrentNode(this.tree.root)
   }
 
