@@ -5,19 +5,22 @@ describe('ReferenceScreenLineIndex', () => {
     let screenLineIndex = buildScreenLineIndex()
     let iterator = screenLineIndex.buildTokenIterator()
 
-    assert(iterator.seekToScreenPosition(point(0, 0)))
+    iterator.seekToScreenPosition(point(0, 0))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
 
-    assert(iterator.seekToScreenPosition(point(0, 6)))
+    iterator.seekToScreenPosition(point(0, 5))
     assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
 
-    assert(iterator.seekToScreenPosition(point(1, 2)))
+    iterator.seekToScreenPosition(point(0, 6))
+    assertIteratorState(iterator, point(0, 6), point(0, 11), point(2, 5), point(2, 10), 'c')
+
+    iterator.seekToScreenPosition(point(1, 2))
     assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
 
-    assert(iterator.seekToScreenPosition(point(2, 2)))
+    iterator.seekToScreenPosition(point(2, 2))
     assertIteratorState(iterator, point(2, 0), point(2, 5), point(3, 10), point(3, 10), 'f')
 
-    assert(iterator.seekToScreenPosition(point(2, 15)))
+    iterator.seekToScreenPosition(point(2, 15))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
   })
 
@@ -25,13 +28,13 @@ describe('ReferenceScreenLineIndex', () => {
     let screenLineIndex = buildScreenLineIndex()
     let iterator = screenLineIndex.buildTokenIterator()
 
-    assert(!iterator.seekToScreenPosition(point(3, 2)))
+    iterator.seekToScreenPosition(point(3, 2))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
 
-    assert(!iterator.seekToScreenPosition(point(-1, 2)))
+    iterator.seekToScreenPosition(point(-1, 2))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
 
-    assert(!iterator.seekToScreenPosition(point(1, -2)))
+    iterator.seekToScreenPosition(point(1, -2))
     assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
   })
 
@@ -39,25 +42,34 @@ describe('ReferenceScreenLineIndex', () => {
     let screenLineIndex = buildScreenLineIndex()
     let iterator = screenLineIndex.buildTokenIterator()
 
-    assert(iterator.seekToBufferPosition(point(0, 0)))
+    iterator.seekToBufferPosition(point(0, 0))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
 
-    assert(iterator.seekToBufferPosition(point(0, 6)))
+    iterator.seekToBufferPosition(point(0, 6))
     assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
 
-    assert(iterator.seekToBufferPosition(point(1, 1)))
+    iterator.seekToBufferPosition(point(1, 1))
     assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
 
-    assert(iterator.seekToBufferPosition(point(2, 7)))
+    iterator.seekToBufferPosition(point(2, 6))
     assertIteratorState(iterator, point(0, 6), point(0, 11), point(2, 5), point(2, 10), 'c')
 
-    assert(iterator.seekToBufferPosition(point(3, 11)))
+    iterator.seekToBufferPosition(point(2, 7))
+    assertIteratorState(iterator, point(0, 6), point(0, 11), point(2, 5), point(2, 10), 'c')
+
+    iterator.seekToBufferPosition(point(3, 0))
+    assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
+
+    iterator.seekToBufferPosition(point(3, 10))
+    assertIteratorState(iterator, point(2, 0), point(2, 5), point(3, 10), point(3, 10), 'f')
+
+    iterator.seekToBufferPosition(point(3, 11))
     assertIteratorState(iterator, point(2, 5), point(2, 10), point(3, 10), point(3, 15), 'g')
 
-    assert(iterator.seekToBufferPosition(point(3, 20)))
+    iterator.seekToBufferPosition(point(3, 20))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
 
-    assert(iterator.seekToBufferPosition(point(3, 20)))
+    iterator.seekToBufferPosition(point(3, 20))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
   })
 
@@ -65,15 +77,14 @@ describe('ReferenceScreenLineIndex', () => {
     let screenLineIndex = buildScreenLineIndex()
     let iterator = screenLineIndex.buildTokenIterator()
 
-    assert(!iterator.seekToBufferPosition(point(4, 2)))
+    iterator.seekToBufferPosition(point(4, 2))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
-    return
 
-    assert(!iterator.seekToBufferPosition(point(-1, 2)))
+    iterator.seekToBufferPosition(point(-1, 2))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
 
-    assert(!iterator.seekToBufferPosition(point(1, -2)))
-    assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
+    iterator.seekToBufferPosition(point(1, -2))
+    assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
   })
 })
 

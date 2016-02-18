@@ -1,5 +1,5 @@
 import LineIterator from './line-iterator'
-import {compare, minPoint, traverse, traversalDistance, formatPoint, ZERO_POINT} from './point-helpers'
+import {compare, isZero, minPoint, traverse, traversalDistance, formatPoint, ZERO_POINT} from './point-helpers'
 
 const ZERO_TOKEN = Object.freeze({
   screenStartOffset: 0,
@@ -58,7 +58,19 @@ export default class TokenIterator {
       }
     }
 
-    return token.screenStartOffset <= targetColumn && targetColumn <= token.screenEndOffset
+    // if at start of a token, rewind in case there are empty tokens before it
+    while (targetColumn === token.screenStartOffset && this.tokenIndex > 0) {
+      this.tokenIndex--
+      token = tokens[this.tokenIndex]
+    }
+
+    // if at the end of a token, advance to beginning of next token unless
+    // current token is empty
+    if (targetColumn === token.screenEndOffset
+        && token.screenExtent > 0
+        && this.tokenIndex < tokens.length - 1) {
+      this.moveToSuccessor()
+    }
   }
 
   seekToBufferPosition (targetPosition) {
@@ -85,10 +97,11 @@ export default class TokenIterator {
     let targetOffsetInLine = traversalDistance(clippedTargetPosition, this.lineIterator.getBufferStart())
     let startIndex = 0
     let endIndex = tokens.length
+    let token
 
     while (startIndex < endIndex) {
       this.tokenIndex = Math.floor((startIndex + endIndex) / 2)
-      let token = tokens[this.tokenIndex]
+      token = tokens[this.tokenIndex]
 
       if (compare(targetOffsetInLine, token.bufferStartOffset) <= 0) {
         endIndex = this.tokenIndex
@@ -101,8 +114,18 @@ export default class TokenIterator {
       }
     }
 
-    while (this.tokenIndex > 0 && compare(targetOffsetInLine, this.getCurrentToken().bufferStartOffset) === 0) {
+    // if at start of a token, rewind in case there are empty tokens before it
+    while (compare(targetOffsetInLine, token.bufferStartOffset) === 0 && this.tokenIndex > 0) {
       this.tokenIndex--
+      token = tokens[this.tokenIndex]
+    }
+
+    // if at the end of a token, advance to beginning of next token unless
+    // current token is empty
+    if (compare(targetOffsetInLine, token.bufferEndOffset) === 0
+        && !isZero(token.bufferExtent)
+        && this.tokenIndex < tokens.length - 1) {
+      this.moveToSuccessor()
     }
   }
 

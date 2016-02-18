@@ -1,4 +1,4 @@
-import {ZERO_POINT, compare, traverse} from './point-helpers'
+import {compare, isZero, traverse, ZERO_POINT} from './point-helpers'
 
 export default class LineIterator {
   constructor (tree) {
@@ -12,6 +12,7 @@ export default class LineIterator {
     this.leftAncestorStack = []
     this.leftAncestorRowStack = [-1]
     this.leftAncestorBufferEndStack = [ZERO_POINT]
+    this.rightAncestorCount = 0
     this.currentScreenRow = 0
     this.currentLineBufferStart = ZERO_POINT
     this.currentLineBufferEnd = ZERO_POINT
@@ -68,25 +69,30 @@ export default class LineIterator {
         }
       }
     }
+
+    if (compare(targetPosition, this.currentLineBufferEnd) === 0
+        && !isZero(this.currentNode.bufferExtent)) {
+      this.moveToSuccessor()
+    }
   }
 
   moveToSuccessor () {
     if (!this.currentNode) return false
+    if (!this.currentNode.right && this.rightAncestorCount === 0) return false
 
     if (this.currentNode.right) {
       this.descendRight()
       while (this.currentNode.left) {
         this.descendLeft()
       }
-      return true
     } else {
       while (this.currentNode.parent && this.currentNode.parent.right === this.currentNode) {
         this.ascend()
       }
       this.ascend()
-
-      return this.currentNode != null
     }
+
+    return true
   }
 
   getScreenRow () {
@@ -137,6 +143,7 @@ export default class LineIterator {
 
   descendLeft () {
     this.pushToAncestorStacks()
+    this.rightAncestorCount++
     this.setCurrentNode(this.currentNode.left)
   }
 
@@ -152,6 +159,7 @@ export default class LineIterator {
     this.leftAncestor = this.leftAncestorStack.pop()
     this.leftAncestorRow = this.leftAncestorRowStack.pop()
     this.leftAncestorBufferEnd = this.leftAncestorBufferEndStack.pop()
+    if (this.currentNode === this.currentNode.parent.left) this.rightAncestorCount--
     this.setCurrentNode(this.currentNode.parent)
   }
 

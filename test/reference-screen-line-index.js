@@ -1,4 +1,4 @@
-import {compare, traverse, minPoint} from '../src/point-helpers'
+import {compare, traverse, minPoint, isZero} from '../src/point-helpers'
 
 export default class ReferenceScreenLineIndex {
   constructor () {
@@ -87,8 +87,9 @@ class ReferenceTokenIterator {
     this.bufferStart = this.lineIterator.getBufferStart()
 
     let tokens = this.lineIterator.getTokens()
+    let token
     for (this.tokenIndex = 0; this.tokenIndex < tokens.length; this.tokenIndex++) {
-      let token = tokens[this.tokenIndex]
+      token = tokens[this.tokenIndex]
       this.screenEnd = traverse(this.screenStart, {row: 0, column: token.screenExtent})
       this.bufferEnd = traverse(this.bufferStart, token.bufferExtent)
 
@@ -98,7 +99,11 @@ class ReferenceTokenIterator {
       this.bufferStart = this.bufferEnd
     }
 
-    return this.containsScreenPosition(targetPosition)
+    if (token.screenExtent > 0
+        && compare(clippedTargetPosition, this.screenEnd) === 0
+        && this.tokenIndex < tokens.length - 1) {
+      this.moveToSuccessor()
+    }
   }
 
   seekToBufferPosition (targetPosition) {
@@ -120,8 +125,9 @@ class ReferenceTokenIterator {
     this.bufferStart = this.lineIterator.getBufferStart()
 
     let tokens = this.lineIterator.getTokens()
+    let token
     for (this.tokenIndex = 0; this.tokenIndex < tokens.length; this.tokenIndex++) {
-      let token = tokens[this.tokenIndex]
+      token = tokens[this.tokenIndex]
       this.screenEnd = traverse(this.screenStart, {row: 0, column: token.screenExtent})
       this.bufferEnd = traverse(this.bufferStart, token.bufferExtent)
 
@@ -132,7 +138,11 @@ class ReferenceTokenIterator {
       this.bufferStart = this.bufferEnd
     }
 
-    return this.containsBufferPosition(targetPosition)
+    if (compare(clippedTargetPosition, this.bufferEnd) === 0
+        && !isZero(token.bufferExtent)
+        && this.tokenIndex < tokens.length - 1) {
+      this.moveToSuccessor()
+    }
   }
 
   moveToSuccessor () {
@@ -228,15 +238,24 @@ class ReferenceLineIterator {
       if (this.currentScreenRow === screenLineCount - 1) break
       this.bufferStart = this.bufferEnd
     }
+
+    if (compare(targetPosition, this.bufferEnd) === 0
+        && !isZero(this.getCurrentScreenLine().bufferExtent)
+        && this.currentScreenRow < screenLineCount - 1) {
+      this.moveToSuccessor()
+    }
   }
 
   moveToSuccessor () {
-    this.bufferStart = this.bufferEnd
-    this.currentScreenRow++
-    let screenLine = this.getCurrentScreenLine()
-    if (!screenLine) return false
-    this.bufferEnd = traverse(this.bufferStart, screenLine.bufferExtent)
-    return true
+    if (this.currentScreenRow < this.screenLineIndex.getScreenLineCount() - 1) {
+      this.currentScreenRow++
+      let screenLine = this.getCurrentScreenLine()
+      this.bufferStart = this.bufferEnd
+      this.bufferEnd = traverse(this.bufferStart, screenLine.bufferExtent)
+      return true
+    } else {
+      return false
+    }
   }
 
   getScreenStart () {
