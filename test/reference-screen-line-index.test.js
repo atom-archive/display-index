@@ -86,6 +86,17 @@ describe('ReferenceScreenLineIndex', () => {
     iterator.seekToBufferPosition(point(1, -2))
     assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
   })
+
+  it('returns false and remains on the last token if attempting to iterate off the end of the last line', () => {
+    let screenLineIndex = buildScreenLineIndex()
+    let iterator = screenLineIndex.buildTokenIterator()
+
+    iterator.seekToBufferPosition(point(3, 15))
+    assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
+
+    assert(!iterator.moveToSuccessor())
+    assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
+  })
 })
 
 function point(row, column) {

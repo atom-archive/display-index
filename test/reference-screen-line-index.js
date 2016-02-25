@@ -146,25 +146,27 @@ class ReferenceTokenIterator {
   }
 
   moveToSuccessor () {
-    this.screenStart = this.screenEnd
-    this.bufferStart = this.bufferEnd
-    this.tokenIndex++
+    let nextToken
 
-    let token = this.getCurrentToken()
-    while (!token) {
-      if (this.lineIterator.moveToSuccessor()) {
-        this.screenStart = this.lineIterator.getScreenStart()
-        this.bufferStart = this.lineIterator.getBufferStart()
-        this.tokenIndex = 0
-        token = this.getCurrentToken()
-      } else {
-        return false
-      }
+    if (this.tokenIndex < this.lineIterator.getTokens().length - 1) {
+      this.tokenIndex++
+      this.screenStart = this.screenEnd
+      this.bufferStart = this.bufferEnd
+      nextToken = this.getCurrentToken()
+    } else if (this.lineIterator.moveToSuccessor()) {
+      this.tokenIndex = 0
+      nextToken = this.getCurrentToken()
+      this.screenStart = this.lineIterator.getScreenStart()
+      this.bufferStart = this.lineIterator.getBufferStart()
     }
 
-    this.screenEnd = traverse(this.screenStart, {row: 0, column: token.screenExtent})
-    this.bufferEnd = traverse(this.bufferStart, token.bufferExtent)
-    return true
+    if (nextToken) {
+      this.screenEnd = traverse(this.screenStart, {row: 0, column: nextToken.screenExtent})
+      this.bufferEnd = traverse(this.bufferStart, nextToken.bufferExtent)
+      return true
+    } else {
+      return false
+    }
   }
 
   getMetadata () {
@@ -190,7 +192,7 @@ class ReferenceTokenIterator {
 
   getCurrentToken () {
     let tokens = this.lineIterator.getTokens()
-    return tokens ? tokens[this.tokenIndex] : null
+    return tokens[this.tokenIndex]
   }
 
   containsScreenPosition (screenPosition) {

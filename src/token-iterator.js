@@ -137,6 +137,7 @@ export default class TokenIterator {
       if (this.lineIterator.moveToSuccessor()) {
         this.tokenIndex = 0
       } else {
+        this.tokenIndex = this.lineIterator.getTokens().length - 1
         return false
       }
     }
