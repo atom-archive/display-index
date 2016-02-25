@@ -115,6 +115,10 @@ export default class LineIterator {
     return this.currentNode ? this.currentNode.tokens : null
   }
 
+  getId () {
+    return this.currentNode ? this.currentNode.id : null
+  }
+
   getScreenPositionWithMaxLineLength () {
     this.reset()
 
