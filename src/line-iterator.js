@@ -43,8 +43,8 @@ export default class LineIterator {
     }
   }
 
-  seekToScreenPosition (targetPosition) {
-    this.findNode(targetPosition.row)
+  seekToScreenRow (screenRow) {
+    this.findNode(screenRow)
   }
 
   seekToBufferPosition (targetPosition) {

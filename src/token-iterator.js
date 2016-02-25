@@ -30,7 +30,7 @@ export default class TokenIterator {
       clippedTargetPosition = {row: lastScreenRow, column: Infinity}
     }
 
-    this.lineIterator.seekToScreenPosition(clippedTargetPosition)
+    this.lineIterator.seekToScreenRow(clippedTargetPosition.row)
 
     let tokens = this.lineIterator.getTokens()
 
