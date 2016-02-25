@@ -111,7 +111,7 @@ export default class LineIterator {
     return this.currentLineBufferEnd
   }
 
-  getTokens (node) {
+  getTokens () {
     return this.currentNode ? this.currentNode.tokens : null
   }
 
