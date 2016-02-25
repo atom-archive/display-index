@@ -66,9 +66,9 @@ export default class TokenIterator {
 
     // if at the end of a token, advance to beginning of next token unless
     // current token is empty
-    if (targetColumn === token.screenEndOffset
-        && token.screenExtent > 0
-        && this.tokenIndex < tokens.length - 1) {
+    if (targetColumn === token.screenEndOffset &&
+        token.screenExtent > 0 &&
+        this.tokenIndex < tokens.length - 1) {
       this.moveToSuccessor()
     }
   }
@@ -122,9 +122,9 @@ export default class TokenIterator {
 
     // if at the end of a token, advance to beginning of next token unless
     // current token is empty
-    if (compare(targetOffsetInLine, token.bufferEndOffset) === 0
-        && !isZero(token.bufferExtent)
-        && this.tokenIndex < tokens.length - 1) {
+    if (compare(targetOffsetInLine, token.bufferEndOffset) === 0 &&
+        !isZero(token.bufferExtent) &&
+        this.tokenIndex < tokens.length - 1) {
       this.moveToSuccessor()
     }
   }

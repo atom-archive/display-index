@@ -70,8 +70,8 @@ export default class LineIterator {
       }
     }
 
-    if (compare(targetPosition, this.currentLineBufferEnd) === 0
-        && !isZero(this.currentNode.bufferExtent)) {
+    if (compare(targetPosition, this.currentLineBufferEnd) === 0 &&
+          !isZero(this.currentNode.bufferExtent)) {
       this.moveToSuccessor()
     }
   }
