@@ -47,6 +47,8 @@ describe('ScreenLineIndex', () => {
         realIterator.seekToBufferPosition(bufferStart)
         assertEqualIterators(realIterator, referenceIterator)
 
+        verifyPointTranslation(random, realIterator, referenceIterator, referenceIndex)
+
         let j = 10
         while (referenceIterator.moveToSuccessor() && --j > 0) {
           assert(realIterator.moveToSuccessor())
@@ -74,6 +76,38 @@ describe('ScreenLineIndex', () => {
       assert.deepEqual(realIterator.getBufferStart(), referenceIterator.getBufferStart(), 'Invalid buffer start')
       assert.deepEqual(realIterator.getBufferEnd(), referenceIterator.getBufferEnd(), 'Invalid buffer end')
       assert.deepEqual(realIterator.getMetadata(), referenceIterator.getMetadata(), 'Invalid metadata')
+    }
+
+    function verifyPointTranslation (random, realIterator, referenceIterator, referenceIndex) {
+      let screenRow = random.intBetween(-1, referenceIndex.getScreenLineCount() + 1)
+      let screenColumn = random.intBetween(-1, (referenceIndex.lineLengthForScreenRow(screenRow) || 0) + 1)
+      let screenPosition = point(screenRow, screenColumn)
+
+      let expectedBufferPosition
+      try {
+        expectedBufferPosition = referenceIndex.translateScreenPosition(screenPosition)
+      } catch (exception) {}
+
+      if (expectedBufferPosition) {
+        assert.deepEqual(realIndex.translateScreenPosition(screenPosition), expectedBufferPosition)
+      } else {
+        assert.throws(() => realIndex.translateScreenPosition(screenPosition))
+      }
+
+      let bufferRow = random.intBetween(-1, referenceIndex.getLastBufferRow() + 1)
+      let bufferColumn = random.intBetween(-1, 100)
+      let bufferPosition = point(bufferRow, bufferColumn)
+
+      let expectedScreenPosition
+      try {
+        expectedScreenPosition = referenceIndex.translateBufferPosition(bufferPosition)
+      } catch (exception) {}
+
+      if (expectedScreenPosition) {
+        assert.deepEqual(realIndex.translateBufferPosition(bufferPosition), expectedScreenPosition)
+      } else {
+        assert.throws(() => realIndex.translateBufferPosition(bufferPosition))
+      }
     }
 
     function performRandomSplice (random, realIndex, referenceIndex) {

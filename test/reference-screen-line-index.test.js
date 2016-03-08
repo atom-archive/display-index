@@ -1,6 +1,6 @@
 import ReferenceScreenLineIndex from './reference-screen-line-index'
 
-describe('ReferenceScreenLineIndex', () => {
+describe('ReferenceScreenLineIndex iterator', () => {
   it('seeks to the leftmost token containing a given screen position', () => {
     let screenLineIndex = buildScreenLineIndex()
     let iterator = screenLineIndex.buildTokenIterator()
@@ -96,6 +96,22 @@ describe('ReferenceScreenLineIndex', () => {
 
     assert(!iterator.moveToSuccessor())
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
+  })
+
+  it('ensures that translated positions are contained within the current token', () => {
+    let screenLineIndex = buildScreenLineIndex()
+    let iterator = screenLineIndex.buildTokenIterator()
+
+    iterator.seekToBufferPosition(point(3, 15))
+
+    assert.deepEqual(iterator.translateBufferPosition(point(3, 16)), point(2, 11))
+    assert.deepEqual(iterator.translateScreenPosition(point(2, 11)), point(3, 16))
+
+    assert.deepEqual(iterator.translateBufferPosition(point(3, 21)), point(2, 15))
+    assert.deepEqual(iterator.translateScreenPosition(point(2, 16)), point(3, 20))
+
+    assert.throws(() => iterator.translateBufferPosition(point(3, 14)))
+    assert.throws(() => iterator.translateScreenPosition(point(2, 9)))
   })
 })
 

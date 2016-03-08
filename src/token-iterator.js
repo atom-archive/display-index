@@ -201,7 +201,7 @@ export default class TokenIterator {
       throw new Error(`Position ${formatPoint(bufferPosition)} is less than the current token's start (${formatPoint(this.getBufferStart())})`)
     }
 
-    return traverse(this.getScreenStart(), traversalDistance(bufferPosition, this.getBufferStart()))
+    return minPoint(this.getScreenEnd(), traverse(this.getScreenStart(), traversalDistance(bufferPosition, this.getBufferStart())))
   }
 
   translateScreenPosition (screenPosition) {
@@ -209,7 +209,7 @@ export default class TokenIterator {
       throw new Error(`Position ${formatPoint(screenPosition)} is less than the current token's start (${formatPoint(this.getScreenStart())})`)
     }
 
-    return traverse(this.getBufferStart(), traversalDistance(screenPosition, this.getScreenStart()))
+    return minPoint(this.getBufferEnd(), traverse(this.getBufferStart(), traversalDistance(screenPosition, this.getScreenStart())))
   }
 
   getCurrentToken () {

@@ -1,4 +1,4 @@
-import {compare, traverse, minPoint, isZero} from '../src/point-helpers'
+import {compare, traverse, traversalDistance, minPoint, isZero} from '../src/point-helpers'
 
 export default class ReferenceScreenLineIndex {
   constructor () {
@@ -31,8 +31,13 @@ export default class ReferenceScreenLineIndex {
     return bufferPosition.row
   }
 
+  getBufferLineCount () {
+    return this.getLastBufferRow() + 1
+  }
+
   lineLengthForScreenRow (screenRow) {
-    return this.screenLines[screenRow].screenExtent
+    let screenLine = this.screenLines[screenRow]
+    return screenLine ? screenLine.screenExtent : null
   }
 
   getMaxScreenLineLength () {
@@ -211,6 +216,22 @@ class ReferenceTokenIterator {
 
   getLastBufferRow () {
     return this.screenLineIndex.getLastBufferRow()
+  }
+
+  translateBufferPosition (bufferPosition) {
+    if (compare(bufferPosition, this.getBufferStart()) < 0) {
+      throw new Error(`Position ${formatPoint(bufferPosition)} is less than the current token's start (${formatPoint(this.getBufferStart())})`)
+    }
+
+    return minPoint(this.getScreenEnd(), traverse(this.getScreenStart(), traversalDistance(bufferPosition, this.getBufferStart())))
+  }
+
+  translateScreenPosition (screenPosition) {
+    if (compare(screenPosition, this.getScreenStart()) < 0) {
+      throw new Error(`Position ${formatPoint(screenPosition)} is less than the current token's start (${formatPoint(this.getScreenStart())})`)
+    }
+
+    return minPoint(this.getBufferEnd(), traverse(this.getBufferStart(), traversalDistance(screenPosition, this.getScreenStart())))
   }
 }
 
