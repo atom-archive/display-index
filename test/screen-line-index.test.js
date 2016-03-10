@@ -20,13 +20,33 @@ describe('ScreenLineIndex', () => {
 
       try {
         for (var j = 0; j < 3; j++) {
-          performRandomSplice(random, realIndex, referenceIndex)
+          let preSpliceIds = getLineIds(realIndex)
+          let removedIds = performRandomSplice(random, realIndex, referenceIndex)
+          let postSpliceIds = getLineIds(realIndex)
+          assert.deepEqual(removedIds, Array.from(subtractSets(preSpliceIds, postSpliceIds)))
           verify(random, realIndex, referenceIndex)
         }
       } catch (exception) {
         exception.message += ` (Random seed: ${seed})`
         throw exception
       }
+    }
+
+    function getLineIds (index) {
+      let ids = new Set
+      let iterator = index.buildScreenLineIterator()
+      if (iterator.seekToScreenRow(0)) {
+        do {
+          ids.add(iterator.getId())
+        } while (iterator.moveToSuccessor())
+      }
+      return ids
+    }
+
+    function subtractSets (a, b) {
+      let result = new Set(a)
+      b.forEach(x => result.delete(x))
+      return result
     }
 
     function verify (random, realIndex, referenceIndex) {
@@ -116,7 +136,7 @@ describe('ScreenLineIndex', () => {
       let screenLines = buildRandomScreenLines(random)
 
       referenceIndex.splice(startRow, replaceCount, screenLines)
-      realIndex.splice(startRow, replaceCount, screenLines)
+      return realIndex.splice(startRow, replaceCount, screenLines)
     }
 
     function buildRandomScreenLines (random) {

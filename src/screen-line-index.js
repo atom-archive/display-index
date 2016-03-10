@@ -38,14 +38,18 @@ export default class ScreenLineIndex {
     }
 
     let newScreenLinesSubtree = this.buildScreenLinesTree(newScreenLines)
+    let oldScreenLinesSubtree
     if (startNode) {
+      oldScreenLinesSubtree = startNode.right
       startNode.right = newScreenLinesSubtree
       if (newScreenLinesSubtree) newScreenLinesSubtree.parent = startNode
       startNode.computeSubtreeProperties()
     } else if (endNode) {
+      oldScreenLinesSubtree = endNode.left
       endNode.left = newScreenLinesSubtree
       if (newScreenLinesSubtree) newScreenLinesSubtree.parent = endNode
     } else {
+      oldScreenLinesSubtree = this.root
       this.root = newScreenLinesSubtree
     }
 
@@ -60,6 +64,18 @@ export default class ScreenLineIndex {
       endNode.priority = this.generateRandom()
       this.bubbleNodeDown(endNode)
     }
+
+    return this.idsForSubtree(oldScreenLinesSubtree)
+  }
+
+  idsForSubtree (node, ids = []) {
+    if (node != null) {
+      this.idsForSubtree(node.left, ids)
+      ids.push(node.id)
+      this.idsForSubtree(node.right, ids)
+    }
+
+    return ids
   }
 
   getLastScreenRow () {
