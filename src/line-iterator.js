@@ -10,8 +10,8 @@ export default class LineIterator {
     this.leftAncestorRow = -1
     this.leftAncestorBufferEnd = ZERO_POINT
     this.leftAncestorStack = []
-    this.leftAncestorRowStack = [-1]
-    this.leftAncestorBufferEndStack = [ZERO_POINT]
+    this.leftAncestorRowStack = []
+    this.leftAncestorBufferEndStack = []
     this.rightAncestorCount = 0
     this.currentScreenRow = 0
     this.currentLineBufferStart = ZERO_POINT
@@ -146,7 +146,6 @@ export default class LineIterator {
   }
 
   descendLeft () {
-    this.pushToAncestorStacks()
     this.rightAncestorCount++
     this.setCurrentNode(this.currentNode.left)
   }
@@ -160,10 +159,14 @@ export default class LineIterator {
   }
 
   ascend () {
-    this.leftAncestor = this.leftAncestorStack.pop()
-    this.leftAncestorRow = this.leftAncestorRowStack.pop()
-    this.leftAncestorBufferEnd = this.leftAncestorBufferEndStack.pop()
-    if (this.currentNode === this.currentNode.parent.left) this.rightAncestorCount--
+    if (this.currentNode === this.currentNode.parent.right) {
+      this.leftAncestor = this.leftAncestorStack.pop()
+      this.leftAncestorRow = this.leftAncestorRowStack.pop()
+      this.leftAncestorBufferEnd = this.leftAncestorBufferEndStack.pop()
+    } else {
+      this.rightAncestorCount--
+    }
+
     this.setCurrentNode(this.currentNode.parent)
   }
 
