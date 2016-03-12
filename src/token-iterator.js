@@ -130,17 +130,32 @@ export default class TokenIterator {
   }
 
   moveToSuccessor () {
-    this.clearCachedPositions()
-
-    this.tokenIndex++
-    while (this.tokenIndex === this.lineIterator.getTokens().length) {
+    if (this.tokenIndex < this.lineIterator.getTokens().length - 1) {
+      this.tokenIndex++
+    } else {
       if (this.lineIterator.moveToSuccessor()) {
         this.tokenIndex = 0
       } else {
-        this.tokenIndex = this.lineIterator.getTokens().length - 1
         return false
       }
     }
+
+    this.clearCachedPositions()
+    return true
+  }
+
+  moveToPredecessor () {
+    if (this.tokenIndex > 0) {
+      this.tokenIndex--
+    } else {
+      if (this.lineIterator.moveToPredecessor()) {
+        this.tokenIndex = this.lineIterator.getTokens().length - 1
+      } else {
+        return false
+      }
+    }
+
+    this.clearCachedPositions()
     return true
   }
 

@@ -95,6 +95,25 @@ export default class LineIterator {
     return true
   }
 
+  moveToPredecessor () {
+    if (!this.currentNode) return false
+    if (!this.currentNode.left && !this.leftAncestor) return false
+
+    if (this.currentNode.left) {
+      this.descendLeft()
+      while (this.currentNode.right) {
+        this.descendRight()
+      }
+    } else {
+      while (this.currentNode.parent && this.currentNode.parent.left === this.currentNode) {
+        this.ascend()
+      }
+      this.ascend()
+    }
+
+    return true
+  }
+
   getScreenRow () {
     return this.currentScreenRow
   }

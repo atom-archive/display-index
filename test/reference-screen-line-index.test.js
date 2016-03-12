@@ -87,6 +87,38 @@ describe('ReferenceScreenLineIndex iterator', () => {
     assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
   })
 
+  it('iterates forward and backward through tokens', () => {
+    let screenLineIndex = buildScreenLineIndex()
+    let iterator = screenLineIndex.buildTokenIterator()
+
+    iterator.seekToBufferPosition(point(0, 0))
+    assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
+
+    iterator.moveToSuccessor()
+    assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
+
+    iterator.moveToSuccessor()
+    assertIteratorState(iterator, point(0, 6), point(0, 11), point(2, 5), point(2, 10), 'c')
+
+    iterator.moveToSuccessor()
+    assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
+
+    iterator.moveToSuccessor()
+    assertIteratorState(iterator, point(1, 5), point(1, 10), point(3, 5), point(3, 10), 'e')
+
+    iterator.moveToPredecessor()
+    assertIteratorState(iterator, point(1, 0), point(1, 5), point(3, 0), point(3, 5), 'd')
+
+    iterator.moveToPredecessor()
+    assertIteratorState(iterator, point(0, 6), point(0, 11), point(2, 5), point(2, 10), 'c')
+
+    iterator.moveToPredecessor()
+    assertIteratorState(iterator, point(0, 5), point(0, 6), point(0, 5), point(2, 5), 'b')
+
+    iterator.moveToPredecessor()
+    assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
+  })
+
   it('returns false and remains on the last token if attempting to iterate off the end of the last line', () => {
     let screenLineIndex = buildScreenLineIndex()
     let iterator = screenLineIndex.buildTokenIterator()
@@ -96,6 +128,17 @@ describe('ReferenceScreenLineIndex iterator', () => {
 
     assert(!iterator.moveToSuccessor())
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
+  })
+
+  it('returns false and remains on the first token if attempting to iterate off the beginning of the first line', () => {
+    let screenLineIndex = buildScreenLineIndex()
+    let iterator = screenLineIndex.buildTokenIterator()
+
+    iterator.seekToBufferPosition(point(0, 0))
+    assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
+
+    assert(!iterator.moveToPredecessor())
+    assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
   })
 
   it('ensures that translated positions are contained within the current token', () => {

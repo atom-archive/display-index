@@ -174,6 +174,43 @@ class ReferenceTokenIterator {
     }
   }
 
+  moveToPredecessor () {
+    if (this.tokenIndex === 0) {
+      if (this.lineIterator.moveToPredecessor()) {
+        this.tokenIndex = this.lineIterator.getTokens().length - 1
+      } else {
+        return false
+      }
+    } else {
+      this.tokenIndex--
+    }
+
+    let screenStart = this.lineIterator.getScreenStart()
+    let bufferStart = this.lineIterator.getBufferStart()
+    let tokens = this.lineIterator.getTokens()
+    let tokenIndex = 0
+
+    while (true) {
+      let token = tokens[tokenIndex]
+      let screenEnd = traverse(screenStart, {row: 0, column: token.screenExtent})
+      let bufferEnd = traverse(bufferStart, token.bufferExtent)
+
+      if (tokenIndex === this.tokenIndex) {
+        this.screenStart = screenStart
+        this.screenEnd = screenEnd
+        this.bufferStart = bufferStart
+        this.bufferEnd = bufferEnd
+        break
+      }
+
+      tokenIndex++
+      screenStart = screenEnd
+      bufferStart = bufferEnd
+    }
+
+    return true
+  }
+
   getMetadata () {
     let token = this.getCurrentToken()
     return token ? token.metadata : null
@@ -275,6 +312,15 @@ class ReferenceLineIterator {
       let screenLine = this.getCurrentScreenLine()
       this.bufferStart = this.bufferEnd
       this.bufferEnd = traverse(this.bufferStart, screenLine.bufferExtent)
+      return true
+    } else {
+      return false
+    }
+  }
+
+  moveToPredecessor () {
+    if (this.currentScreenRow > 0) {
+      this.seekToScreenRow(this.currentScreenRow - 1)
       return true
     } else {
       return false

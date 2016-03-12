@@ -79,6 +79,17 @@ describe('ScreenLineIndex', () => {
           assert(!realIterator.moveToSuccessor())
           assertEqualIterators(realIterator, referenceIterator)
         }
+
+        let k = 0
+        while (referenceIterator.moveToPredecessor() && --k > 10) {
+          assert(realIterator.moveToPredecessor())
+          assertEqualIterators(realIterator, referenceIterator)
+        }
+
+        if (k > 10) {
+          assert(!realIterator.moveToPredecessor())
+          assertEqualIterators(realIterator, referenceIterator)
+        }
       }
 
       // verify longest screen line summarization
