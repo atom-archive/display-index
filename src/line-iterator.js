@@ -138,6 +138,14 @@ export default class LineIterator {
     return this.currentNode ? this.currentNode.id : null
   }
 
+  isSoftWrappedAtStart () {
+    return this.currentNode ? this.currentNode.softWrappedAtStart : false
+  }
+
+  isSoftWrappedAtEnd () {
+    return this.currentNode ? this.currentNode.softWrappedAtEnd : false
+  }
+
   getScreenPositionWithMaxLineLength () {
     this.reset()
 

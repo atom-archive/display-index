@@ -3,10 +3,12 @@ import {traverse, ZERO_POINT} from './point-helpers'
 let idCounter = 0
 
 export default class LineNode {
-  constructor ({screenExtent, bufferExtent, tokens}, left, right, priority) {
+  constructor ({screenExtent, bufferExtent, tokens, softWrappedAtStart, softWrappedAtEnd}, left, right, priority) {
     this.screenExtent = screenExtent
     this.bufferExtent = bufferExtent
     this.tokens = tokens
+    this.softWrappedAtStart = softWrappedAtStart
+    this.softWrappedAtEnd = softWrappedAtEnd
     this.left = left
     this.right = right
     this.priority = priority
