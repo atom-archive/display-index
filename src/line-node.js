@@ -68,4 +68,18 @@ export default class LineNode {
       return ZERO_POINT
     }
   }
+
+  appendTokenLines (tokenLines) {
+    if (this.left) {
+      this.left.appendTokenLines(tokenLines)
+    }
+    tokenLines.push({
+      screenExtent: this.screenExtent,
+      bufferExtent: this.bufferExtent,
+      tokens: this.tokens
+    })
+    if (this.right) {
+      this.right.appendTokenLines(tokenLines)
+    }
+  }
 }

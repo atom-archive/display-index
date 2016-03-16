@@ -99,6 +99,14 @@ export default class ScreenLineIndex {
     return this.lineIterator.getScreenPositionWithMaxLineLength()
   }
 
+  getTokenLines () {
+    let tokenLines = []
+    if (this.root) {
+      this.root.appendTokenLines(tokenLines)
+    }
+    return tokenLines
+  }
+
   bubbleNodeUp (node) {
     while (node.parent && node.priority < node.parent.priority) {
       if (node === node.parent.left) {
