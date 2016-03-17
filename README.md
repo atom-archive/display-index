@@ -200,11 +200,11 @@ Returns the `{row, column}` extent of the current token in the buffer.
 
 Returns the value supplied as the `metadata` field when populating the display index via `splice`.
 
-### `translateBufferPosition()`
+### `translateBufferPosition(bufferPosition)`
 
 Returns the `{row, column}` screen position corresponding to the given `{row, column}` buffer position relative to the start of the token in the buffer. If the given position precedes the start of the token in the buffer, an exception is thrown. If the translated position would fall after the end of the token on screen, it is clipped to the end of the token.
 
-### `translateScreenPosition()`
+### `translateScreenPosition(screenPosition)`
 
 Returns the `{row, column}` buffer position corresponding to the given `{row, column}` screen position relative to the start of the token on screen. If the given position precedes the start of the token in on screen, an exception is thrown. If the translated position would fall after the end of the token in the buffer, it is clipped to the end of the token.
 
