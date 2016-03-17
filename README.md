@@ -201,3 +201,5 @@ Returns the `{row, column}` screen position corresponding to the given `{row, co
 ### `translateScreenPosition()`
 
 Returns the `{row, column}` buffer position corresponding to the given `{row, column}` screen position relative to the start of the token on screen. If the given position precedes the start of the token in on screen, an exception is thrown. If the translated position would fall after the end of the token in the buffer, it is clipped to the end of the token.
+
+[text-buffer]: https://github.com/atom/text-buffer
