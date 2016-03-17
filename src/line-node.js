@@ -76,7 +76,9 @@ export default class LineNode {
     tokenLines.push({
       screenExtent: this.screenExtent,
       bufferExtent: this.bufferExtent,
-      tokens: this.tokens
+      tokens: this.tokens,
+      softWrappedAtStart: this.softWrappedAtStart,
+      softWrappedAtEnd: this.softWrappedAtEnd
     })
     if (this.right) {
       this.right.appendTokenLines(tokenLines)
