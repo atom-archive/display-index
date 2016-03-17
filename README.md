@@ -37,7 +37,9 @@ displayIndex.splice(0, 0, [
       // spans 2 rows, 5 columns in the buffer.
       {screenExtent: 1, bufferExtent: point(2, 5), metadata: 'b'},
       {screenExtent: 5, bufferExtent: point(0, 5), metadata: 'c'}
-    ]
+    ],
+    softWrappedAtStart: false,
+    softWrappedAtEnd: false
   },
   {
     screenExtent: 10,
@@ -47,7 +49,9 @@ displayIndex.splice(0, 0, [
     tokens: [
       {screenExtent: 5, bufferExtent: point(0, 5), metadata: 'd'},
       {screenExtent: 5, bufferExtent: point(0, 5), metadata: 'e'}
-    ]
+    ],
+    softWrappedAtStart: false,
+    softWrappedAtEnd: true
   },
   {
     screenExtent: 15,
@@ -59,7 +63,9 @@ displayIndex.splice(0, 0, [
       {screenExtent: 5, bufferExtent: point(0, 0), metadata: 'f'},
       {screenExtent: 5, bufferExtent: point(0, 5), metadata: 'g'},
       {screenExtent: 5, bufferExtent: point(0, 5), metadata: 'h'}
-    ]
+    ],
+    softWrappedAtStart: true,
+    softWrappedAtEnd: false
   }
 ])
 ```
