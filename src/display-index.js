@@ -99,10 +99,10 @@ export default class DisplayIndex {
     return this.lineIterator.getScreenPositionWithMaxLineLength()
   }
 
-  getTokenLines () {
+  getScreenLines () {
     let tokenLines = []
     if (this.root) {
-      this.root.appendTokenLines(tokenLines)
+      this.root.appendScreenLines(tokenLines)
     }
     return tokenLines
   }

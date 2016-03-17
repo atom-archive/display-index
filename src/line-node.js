@@ -69,9 +69,9 @@ export default class LineNode {
     }
   }
 
-  appendTokenLines (tokenLines) {
+  appendScreenLines (tokenLines) {
     if (this.left) {
-      this.left.appendTokenLines(tokenLines)
+      this.left.appendScreenLines(tokenLines)
     }
     tokenLines.push({
       screenExtent: this.screenExtent,
@@ -81,7 +81,7 @@ export default class LineNode {
       softWrappedAtEnd: this.softWrappedAtEnd
     })
     if (this.right) {
-      this.right.appendTokenLines(tokenLines)
+      this.right.appendScreenLines(tokenLines)
     }
   }
 }

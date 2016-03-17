@@ -90,7 +90,7 @@ Returns the length of the line at the given screen row.
 
 Returns a `{row, column}` object with the `row` containing the longest screen line and the `column` pointing to the length of that line.
 
-### `getTokenLines ()`
+### `getScreenLines ()`
 
 Returns an array of all screen lines spliced into the index. Useful for debugging.
 
