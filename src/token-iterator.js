@@ -1,4 +1,4 @@
-import LineIterator from './line-iterator'
+import ScreenLineIterator from './screen-line-iterator'
 import {compare, isZero, minPoint, traverse, traversalDistance, formatPoint, ZERO_POINT} from './point-helpers'
 
 const ZERO_TOKEN = Object.freeze({
@@ -11,7 +11,7 @@ const ZERO_TOKEN = Object.freeze({
 export default class TokenIterator {
   constructor (displayIndex) {
     this.displayIndex = displayIndex
-    this.lineIterator = new LineIterator(displayIndex)
+    this.lineIterator = new ScreenLineIterator(displayIndex)
     this.clearCachedPositions()
   }
 

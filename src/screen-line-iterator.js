@@ -1,6 +1,6 @@
 import {compare, isZero, traverse, ZERO_POINT} from './point-helpers'
 
-export default class LineIterator {
+export default class ScreenLineIterator {
   constructor (tree) {
     this.tree = tree
   }

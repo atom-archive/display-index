@@ -1,5 +1,5 @@
 import Random from 'random-seed'
-import LineIterator from './line-iterator'
+import ScreenLineIterator from './screen-line-iterator'
 import TokenIterator from './token-iterator'
 import LineNode from './line-node'
 
@@ -12,7 +12,7 @@ export default class DisplayIndex {
       }
     }
     this.root = null
-    this.lineIterator = new LineIterator(this)
+    this.lineIterator = new ScreenLineIterator(this)
   }
 
   buildTokenIterator () {
@@ -20,7 +20,7 @@ export default class DisplayIndex {
   }
 
   buildScreenLineIterator () {
-    return new LineIterator(this)
+    return new ScreenLineIterator(this)
   }
 
   splice (startRow, replacementCount, newScreenLines) {
