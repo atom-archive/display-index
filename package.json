@@ -1,6 +1,6 @@
 {
   "name": "display-index",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Used by Atom to track the correspondence between on-screen lines and the underlying buffer.",
   "main": "dist/display-index.js",
   "scripts": {
