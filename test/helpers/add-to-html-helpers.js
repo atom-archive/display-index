@@ -1,8 +1,8 @@
-import ScreenLineIndex from '../../src/screen-line-index'
+import DisplayIndex from '../../src/display-index'
 import LineNode from '../../src/line-node'
 import {traverse, formatPoint, ZERO_POINT} from '../../src/point-helpers'
 
-ScreenLineIndex.prototype.toHTML = function () {
+DisplayIndex.prototype.toHTML = function () {
   if (this.root) {
     return this.root.toHTML()
   } else {

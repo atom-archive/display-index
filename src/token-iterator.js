@@ -9,9 +9,9 @@ const ZERO_TOKEN = Object.freeze({
 })
 
 export default class TokenIterator {
-  constructor (screenLineIndex) {
-    this.screenLineIndex = screenLineIndex
-    this.lineIterator = new LineIterator(screenLineIndex)
+  constructor (displayIndex) {
+    this.displayIndex = displayIndex
+    this.lineIterator = new LineIterator(displayIndex)
     this.clearCachedPositions()
   }
 
@@ -25,7 +25,7 @@ export default class TokenIterator {
     if (clippedTargetPosition.column < 0) {
       clippedTargetPosition = {row: clippedTargetPosition.row, column: 0}
     }
-    let lastScreenRow = this.screenLineIndex.getLastScreenRow()
+    let lastScreenRow = this.displayIndex.getLastScreenRow()
     if (clippedTargetPosition.row > lastScreenRow) {
       clippedTargetPosition = {row: lastScreenRow, column: Infinity}
     }

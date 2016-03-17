@@ -1,10 +1,10 @@
 import Random from 'random-seed'
-import ReferenceScreenLineIndex from './reference-screen-line-index'
-import ScreenLineIndex from '../src/screen-line-index'
+import ReferenceDisplayIndex from './reference-display-index'
+import DisplayIndex from '../src/display-index'
 import {traverse} from '../src/point-helpers'
 import './helpers/add-to-html-helpers'
 
-describe('ScreenLineIndex', () => {
+describe('DisplayIndex', () => {
   it('behaves identically to a linear reference implementation under random mutations and queries', function () {
     this.timeout(Infinity)
 
@@ -15,8 +15,8 @@ describe('ScreenLineIndex', () => {
       let random = new Random(seed)
       tokenCount = 0
 
-      let referenceIndex = new ReferenceScreenLineIndex()
-      let realIndex = new ScreenLineIndex(seed)
+      let referenceIndex = new ReferenceDisplayIndex()
+      let realIndex = new DisplayIndex(seed)
 
       try {
         for (var j = 0; j < 3; j++) {

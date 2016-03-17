@@ -1,9 +1,9 @@
-import ReferenceScreenLineIndex from './reference-screen-line-index'
+import ReferenceDisplayIndex from './reference-display-index'
 
-describe('ReferenceScreenLineIndex iterator', () => {
+describe('ReferenceDisplayIndex iterator', () => {
   it('seeks to the leftmost token containing a given screen position', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToScreenPosition(point(0, 0))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
@@ -25,8 +25,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('seeks to the closest token to an invalid screen position', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToScreenPosition(point(3, 2))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
@@ -39,8 +39,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('seeks to the leftmost token containing a given buffer position', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToBufferPosition(point(0, 0))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
@@ -74,8 +74,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('seeks to the closest token to an invalid buffer position', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToBufferPosition(point(4, 2))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
@@ -88,8 +88,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('iterates forward and backward through tokens', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToBufferPosition(point(0, 0))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
@@ -120,8 +120,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('returns false and remains on the last token if attempting to iterate off the end of the last line', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToBufferPosition(point(3, 15))
     assertIteratorState(iterator, point(2, 10), point(2, 15), point(3, 15), point(3, 20), 'h')
@@ -131,8 +131,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('returns false and remains on the first token if attempting to iterate off the beginning of the first line', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToBufferPosition(point(0, 0))
     assertIteratorState(iterator, point(0, 0), point(0, 5), point(0, 0), point(0, 5), 'a')
@@ -142,8 +142,8 @@ describe('ReferenceScreenLineIndex iterator', () => {
   })
 
   it('ensures that translated positions are contained within the current token', () => {
-    let screenLineIndex = buildScreenLineIndex()
-    let iterator = screenLineIndex.buildTokenIterator()
+    let displayIndex = buildDisplayIndex()
+    let iterator = displayIndex.buildTokenIterator()
 
     iterator.seekToBufferPosition(point(3, 15))
 
@@ -170,10 +170,10 @@ function assertIteratorState (iterator, screenStart, screenEnd, bufferStart, buf
   assert.equal(iterator.getMetadata(), metadata)
 }
 
-function buildScreenLineIndex () {
-  let screenLineIndex = new ReferenceScreenLineIndex()
+function buildDisplayIndex () {
+  let displayIndex = new ReferenceDisplayIndex()
 
-  screenLineIndex.splice(0, 0, [
+  displayIndex.splice(0, 0, [
     {
       screenExtent: 11,
       bufferExtent: point(3, 0),
@@ -202,5 +202,5 @@ function buildScreenLineIndex () {
     }
   ])
 
-  return screenLineIndex
+  return displayIndex
 }

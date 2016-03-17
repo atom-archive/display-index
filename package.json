@@ -1,8 +1,8 @@
 {
-  "name": "atom-screen-line-index",
+  "name": "display-index",
   "version": "0.0.0",
   "description": "Used by Atom to track the correspondence between on-screen lines and the underlying buffer.",
-  "main": "dist/screen-line-index.js",
+  "main": "dist/display-index.js",
   "scripts": {
     "test": "npm run standard && node_modules/.bin/mocha ./test/helpers/setup  test/*",
     "tdd": "node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/setup  test/",
@@ -13,17 +13,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/atom/atom-screen-line-index.git"
+    "url": "https://github.com/atom/display-index.git"
   },
   "keywords": [
-    "atom lines data-structure"
+    "atom display index data-structure"
   ],
   "author": "Nathan Sobo <nathan@github.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nathansobo/atom-screen-line-index/issues"
+    "url": "https://github.com/nathansobo/display-index/issues"
   },
-  "homepage": "https://github.com/atom/atom-screen-line-index",
+  "homepage": "https://github.com/atom/display-index",
   "devDependencies": {
     "babel": "^5.0.0",
     "babel-eslint": "^4.0.5",

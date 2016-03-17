@@ -3,7 +3,7 @@ import LineIterator from './line-iterator'
 import TokenIterator from './token-iterator'
 import LineNode from './line-node'
 
-export default class ScreenLineIndex {
+export default class DisplayIndex {
   constructor (seed) {
     if (seed != null) {
       let randomGenerator = new Random(seed)
